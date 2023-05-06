@@ -16,6 +16,23 @@
 </head>
 <body>
 
+<?php
+// Incluir el archivo de conexión
+require_once "db/conexion.php";
+
+// Obtener la conexión a la base de datos
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+// Consulta SQL
+$sql = "SELECT * FROM libros";
+
+// Enviar la consulta al servidor de la base de datos
+$resultado = mysqli_query($conn, $sql);
+
+
+?>
+
+
 	<!-- Navigation -->
 	<nav class="site-navigation">
 		<div class="site-navigation-inner site-container">
@@ -95,57 +112,31 @@
 		<div class="site-container">
 			<h2 class="universal-h2 universal-h2-bckg">Los ultimos libros agregados a la biblioteca</h2>
 			<div class="books">
-				<div class="single-book">
-					<a href="#" class="single-book__img">
-						<img src="./images/books-1.jpg" alt="single book and cd">
-						<div class="single-book_download">
-							<img src="./images/download.svg" alt="book image">
-						</div>
-					</a>
-					<h4 class="single-book__title">Matematica Basica</h4>
-					<h5>Autor</h5>
-					<span class="single-book__price">Ezpinoza Ramos</span>
-					<!-- star rating end -->
-				</div>
-				<div class="single-book">
-					<a href="#" class="single-book__img">
-						<img src="./images/books-2.jpg" alt="single book and cd">
-						<div class="single-book_download">
-							<img src="./images/download.svg" alt="book image">
-						</div>
-					</a>
-					<h4 class="single-book__title">Molleon’s Life</h4>
-					<span class="single-book__price">$22.00</span>
-					<!-- star rating -->
-					<div class="rating">
-						<span>&#9734;</span>
-						<span>&#9734;</span>
-						<span>&#9734;</span>
-						<span>&#9734;</span>
-						<span>&#9734;</span>
-					</div>
-					<!-- star rating end -->
-				</div>
-				<div class="single-book">
-					<a href="#" class="single-book__img">
-						<img src="./images/books-3.jpg" alt="single book and cd">
-						<div class="single-book_download">
-							<img src="./images/download.svg" alt="book image">
-						</div>
-					</a>
-					<h4 class="single-book__title">Love is Love</h4>
-					<span class="single-book__price">$25.00</span>
-				</div>
-				<div class="single-book">
-					<a href="#" class="single-book__img">
-						<img src="./images/books-4.jpg" alt="single book and cd">
-						<div class="single-book_download">
-							<img src="./images/download.svg" alt="book image">
-						</div>
-					</a>
-					<h4 class="single-book__title">Give Me Also</h4>
-					<span class="single-book__price">$30.00</span>
-				</div>
+				
+				<?php 
+									// Verificar si la consulta retornó resultados
+					if (mysqli_num_rows($resultado) > 0) {
+						// Recuperar cada fila de resultados de la consulta
+						while ($fila = mysqli_fetch_assoc($resultado)) {
+							// Crear los elementos HTML
+							echo '<div class="single-book">';
+							echo '<a href="#" class="single-book__img">';
+							echo '<img src="data:image/jpeg;base64,' . base64_encode($fila["portada"]) . '" alt="' . $fila["nombreLibro"] . '">';
+							echo '<div class="single-book_download">';
+							echo '<img src="./images/download.svg" alt="' . $fila["nombreLibro"] . '">';
+							echo '</div></a>';
+							echo '<h4 class="single-book__title">' . $fila["nombreLibro"] . '</h4>';
+							echo '<h5>Autor</h5>';
+							echo '<span class="single-book__price">' . $fila["genero"] . '</span>';
+							echo '</div>';
+						}
+					} else {
+						echo "La consulta no retornó resultados";
+					}
+
+					// Cerrar la conexión a la base de datos
+					mysqli_close($conn);
+									?>
 			</div>
 			
 		</div>
